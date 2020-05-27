@@ -10,5 +10,7 @@ PYME module for renderering 2D images with a color channel.
 	* Gaussian renderering currently does not support multiprocessing. Scales poorly with number of localizations. Can be improved.
 	* Multiprocessing for Histogram renderering not optimized. Scales poorly with dense samples (counts/pixel). Potentially slower than Gaussian renderering with sigma < 1 pixel.
 
+*	Images written as RGBA in the color channel.
+
 * Should be implemented on GPU. Marginal gains in image control (defined pixel size and capability for max projection) over regular point sprite display for significant cost in speed.
 	

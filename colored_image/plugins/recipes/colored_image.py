@@ -154,11 +154,12 @@ class GenerateImage(ModuleBase):
 #            pass        
             
         try:
-            mdh = NestedClassMDHandler()
+            mdh = NestedClassMDHandler(pipeline.mdh)
             mdh['Rendering.Method'] = self.render_method
             if 'imageID' in pipeline.mdh.getEntryNames():
                 mdh['Rendering.SourceImageID'] = pipeline.mdh['imageID']
             mdh['Rendering.SourceFilename'] = getattr(pipeline, 'filename', '')
+            print("source filename: {}".format(getattr(pipeline, 'filename', '')))
             if 'DataFileID' in pipeline.mdh.getEntryNames():
                 mdh['Rendering.SourceDataFileID'] = pipeline.mdh['DataFileID']
             
