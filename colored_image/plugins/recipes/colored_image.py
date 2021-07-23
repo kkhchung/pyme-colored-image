@@ -16,7 +16,7 @@ from PYME.recipes.traits import Input, Output, Float, Enum, CStr, Bool, Int, Lis
 import numpy as np
 from scipy import ndimage, optimize, signal, interpolate, stats
 from PYME.IO.image import ImageStack
-from PYME.IO.dataWrap import ListWrap
+#from PYME.IO.dataWrap import ListWrap
 from PYME.IO.MetaDataHandler import NestedClassMDHandler
 
 from PYME.recipes import processing
@@ -245,11 +245,11 @@ class GenerateImage(ModuleBase):
 #                im[xi_start[i]: xi_stop[i], yi_start[i]: yi_stop[i]] += color_alpha * z_color[i] * ((1-im[xi_start[i]: xi_stop[i], yi_start[i]: yi_stop[i], 3])*psf)[:,:,None]
 
         im_tmp = np.empty_like(im)                
-        for chunk in xrange(0, len(x), 5000):
+        for chunk in range(0, len(x), 5000):
             chunk_end = min(len(x), chunk+5000)
             im_tmp.fill(0)
             
-            for i in xrange(chunk, chunk_end):                
+            for i in range(chunk, chunk_end):                
                 psf = gaussian_2d_simple([x[i], sigma, y[i], sigma], [dim[xi_start[i]: xi_stop[i], yi_start[i]: yi_stop[i]] for dim in [X, Y]])
                 if color_alpha <= 0:
                     im_tmp[xi_start[i]: xi_stop[i], yi_start[i]: yi_stop[i]] += z_color[i] * psf[:,:,None]
@@ -304,13 +304,13 @@ class GenerateImage(ModuleBase):
         smax = np.atleast_1d(np.array(sample.max(axis=0), float))
         
         # Make sure the bins have a finite width.
-        for i in xrange(len(smin)):
+        for i in range(len(smin)):
             if smin[i] == smax[i]:
                 smin[i] = smin[i] - .5
                 smax[i] = smax[i] + .5
                 
         # Create edge arrays
-        for i in xrange(Ndim):
+        for i in range(Ndim):
             if np.isscalar(bins[i]):
                 nbin[i] = bins[i] + 2  # +2 for outlier bins
                 edges[i] = np.linspace(smin[i], smax[i], nbin[i] - 1)
@@ -324,13 +324,13 @@ class GenerateImage(ModuleBase):
         # Compute the bin number each sample falls into, in each dimension
         sampBin = [
             np.digitize(sample[:, i], edges[i])
-            for i in xrange(Ndim)
+            for i in range(Ndim)
         ]
         
         # Using `digitize`, values that fall on an edge are put in the right bin.
         # For the rightmost bin, we want values equal to the right
         # edge to be counted in the last bin, and not as an outlier.
-        for i in xrange(Ndim):
+        for i in range(Ndim):
             # Find the rounding precision
             decimal = int(-np.log10(dedges[i].min())) + 6
             # Find which points are on the rightmost edge.
@@ -354,7 +354,7 @@ class GenerateImage(ModuleBase):
         result.fill(0)
 #        flatcount = np.bincount(binnumbers, None)
 #        a = flatcount.nonzero()
-#        for vv in xrange(Vdim):
+#        for vv in range(Vdim):
 #            flatsum = np.bincount(binnumbers, values[vv])
 #            result[vv, a] = np.tile(flatsum[a] / flatcount[a], (4,1)).T
         
@@ -367,11 +367,11 @@ class GenerateImage(ModuleBase):
         
         if pool == None:
             for i in np.unique(binnumbers):
-                for vv in xrange(Vdim):
+                for vv in range(Vdim):
                     result[vv, i] = calculate_observed_color((None, values[vv, binnumbers == i], cmap, crange, weighting))[1]
         else:
             unique_binnumbers = np.unique(binnumbers)
-            for vv in xrange(Vdim):
+            for vv in range(Vdim):
 #                args = zip(unique_binnumbers, [values[vv, binnumbers == i] for i in unique_binnumbers], (cmap,)*len(unique_binnumbers), (crange,)*len(unique_binnumbers))
                 args = [(unique_binnumbers[i], values[vv, binnumbers == j], cmap, crange, weighting) for i, j in enumerate(unique_binnumbers)]
                 for i, (j, res) in enumerate(pool.imap_unordered(calculate_observed_color, args, chunksize=100)):                    
